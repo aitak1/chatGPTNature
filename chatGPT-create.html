@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nature Website</title>
+<style>
+  /* General Styles */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e0f2f1; /* Light greenish-blue */
+    color: #37474f; /* Dark blue-grey */
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  /* Navigation Bar Styles */
+  .navbar {
+    background-color: #388e3c; /* Green */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .search-bar {
+    flex-grow: 1;
+    display: flex;
+  }
+  .search-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+  }
+  .search-btn {
+    padding: 8px 15px;
+    background-color: #4caf50; /* Darker green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  .navigation-tabs {
+    display: flex;
+  }
+  .nav-tab {
+    padding: 10px;
+    margin-left: 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    background-color: #388e3c; /* Green */
+  }
+  /* Explore Page Styles */
+  .filter-box {
+    background-color: #fff; /* White */
+    padding: 10px;
+    border-radius: 5px;
+    margin-right: 20px;
+  }
+  .list-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  .list-item:hover {
+    background-color: #f0f0f0; /* Light grey */
+  }
+  .list-item img {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+    border-radius: 5px;
+  }
+  .list-item-description {
+    flex-grow: 1;
+  }
+  /* Community Page Styles */
+  .add-post-btn {
+    padding: 10px 20px;
+    background-color: #4caf50; /* Darker green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  .post {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .post img {
+    width: 200px;
+    height: auto;
+    border-radius: 5px;
+    margin-right: 20px;
+    float: left;
+  }
+  .post-description {
+    overflow-y: auto;
+    max-height: 200px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Navigation Bar -->
+  <div class="navbar">
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="Search...">
+      <button class="search-btn">Search</button>
+    </div>
+    <div class="navigation-tabs">
+      <a href="#" class="nav-tab">Community</a>
+      <a href="#" class="nav-tab">Explore</a>
+    </div>
+  </div>
+
+  <!-- Explore Page -->
+  <div id="explore-page" style="display: none;">
+    <div class="filter-box">
+      <label><input type="radio" name="filter" value="plants"> Plants</label>
+      <label><input type="radio" name="filter" value="animals"> Animals</label>
+      <label><input type="radio" name="filter" value="both" checked> Both</label>
+    </div>
+    <div class="list">
+      <!-- List items will be dynamically added here -->
+    </div>
+  </div>
+
+  <!-- Community Page -->
+  <div id="community-page" style="display: none;">
+    <button class="add-post-btn">Add Post</button>
+    <div id="posts">
+      <!-- Posts will be dynamically added here -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // Sample data for Explore Page
+  const exploreData = [
+    { type: "plant", name: "Sunflower", description: "A beautiful flower that follows the sun." },
+    { type: "animal", name: "Deer", description: "A graceful mammal found in forests." }
+    // Add more data as needed
+  ];
+
+  // Display Explore Page by default
+  document.getElementById('explore-page').style.display = 'block';
+
+  // Populate Explore Page with data
+  const exploreList = document.querySelector('#explore-page .list');
+  exploreData.forEach(item => {
+    const listItem = document.createElement('div');
+    listItem.classList.add('list-item');
+    listItem.innerHTML = `
+      <img src="https://via.placeholder.com/100" alt="${item.name}">
+      <div class="list-item-description">
+        <h3>${item.name}</h3>
+        <p>${item.description}</p>
+      </div>
+    `;
+    exploreList.appendChild(listItem);
+  });
+
+  // Filter Explore Page list items
+  const filterRadioButtons = document.querySelectorAll('input[type="radio"][name="filter"]');
+  filterRadioButtons.forEach(button => {
+    button.addEventListener('change', () => {
+      const filterValue = button.value.toLowerCase();
+      const listItems = document.querySelectorAll('#explore-page .list-item');
+      listItems.forEach(item => {
+        const itemType = exploreData.find(dataItem => dataItem.name === item.querySelector('h3').innerText).type;
+        if (filterValue === 'both' || itemType === filterValue) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Switch between Community and Explore pages
+  const communityTab = document.querySelector('.nav-tab:nth-child(1)');
+  const exploreTab = document.querySelector('.nav-tab:nth-child(2)');
+  communityTab.addEventListener('click', () => {
+    document.getElementById('community-page').style.display = 'block';
+    document.getElementById('explore-page').style.display = 'none';
+  });
+  exploreTab.addEventListener('click', () => {
+    document.getElementById('explore-page').style.display = 'block';
+    document.getElementById('community-page').style.display = 'none';
+  });
+
+  // Sample function to add posts to Community Page
+  const addPostButton = document.querySelector('.add-post-btn');
+  const postsContainer = document.getElementById('posts');
+  addPostButton.addEventListener('click', () => {
+    const post = document.createElement('div');
+    post.classList.add('post');
+    post.innerHTML = `
+      <img src="https://via.placeholder.com/150" alt="Placeholder image">
+      <div class="post-description">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.</p>
+      </div>
+      <button class="like-btn">Like</button>
+      <button class="add-comment-btn">Add Comment</button>
+    `;
+    postsContainer.appendChild(post);
+  });
+</script>
+</body>
+</html>
